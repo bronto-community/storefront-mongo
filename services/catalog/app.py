@@ -1,19 +1,16 @@
-"""catalog-api -- product listings."""
+"""shop-catalog -- product listings."""
 
-import asyncio
 import logging
-import os
 import random
 
 from fastapi import FastAPI
 
 from services.common import telemetry
+from services.common.db import db
 
-app = FastAPI(title="catalog-api")
+app = FastAPI(title="shop-catalog")
 telemetry.setup(app)
-log = logging.getLogger("catalog-api")
-
-LOOKUP_MS = int(os.environ.get("LOOKUP_MS", "10"))
+log = logging.getLogger("shop-catalog")
 
 
 @app.on_event("startup")
@@ -27,10 +24,8 @@ async def healthz() -> dict:
 
 
 @app.get("/items")
-async def items() -> dict:
-    await asyncio.sleep(LOOKUP_MS / 1000.0)
-    if random.random() < 0.1:
-        log.warning("slow query detected: %dms on catalog_items", random.randint(700, 900))
+def items() -> dict:
+    products = list(db().products.find({"active": True}).sort("rank", 1).limit(12))
     if random.random() < 0.3:
         log.warning("cache miss for shard %d, falling back to primary", random.randint(1, 8))
-    return {"items": ["sku-1", "sku-2", "sku-3"]}
+    return {"items": [p["sku"] for p in products]}

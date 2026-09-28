@@ -8,6 +8,7 @@ from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExp
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
+from opentelemetry.instrumentation.pymongo import PymongoInstrumentor
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.sdk.resources import Resource
@@ -34,6 +35,7 @@ def setup(app) -> None:
         metric_readers=[PeriodicExportingMetricReader(OTLPMetricExporter(), export_interval_millis=5000)],
     ))
     HTTPXClientInstrumentor().instrument()
+    PymongoInstrumentor().instrument()
     FastAPIInstrumentor.instrument_app(app)
     logging.basicConfig(level=logging.INFO, format=f"%(asctime)s {SERVICE} %(levelname)s %(message)s")
     logging.getLogger("httpx").setLevel(logging.WARNING)

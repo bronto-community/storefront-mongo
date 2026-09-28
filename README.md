@@ -4,10 +4,10 @@ The four services behind the shop.
 
 | Service | Path | Owner |
 |---|---|---|
-| `storefront-web` | `services/web` | Web |
-| `checkout-api` | `services/checkout` | Payments |
-| `payments-gateway` | `services/payments` | Payments |
-| `catalog-api` | `services/catalog` | Catalog |
+| `shop-web` | `services/web` | Web |
+| `shop-checkout` | `services/checkout` | Payments |
+| `shop-payments` | `services/payments` | Payments |
+| `shop-catalog` | `services/catalog` | Catalog |
 
 All four build from the root `Dockerfile`. `SERVICE_MODULE` picks the app,
 `SERVICE_NAME` sets the telemetry service name.

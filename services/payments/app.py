@@ -1,4 +1,4 @@
-"""payments-gateway -- our side of the PSP integration."""
+"""shop-payments -- our side of the PSP integration."""
 
 import asyncio
 import logging
@@ -9,9 +9,9 @@ from fastapi import FastAPI
 
 from services.common import telemetry
 
-app = FastAPI(title="payments-gateway")
+app = FastAPI(title="shop-payments")
 telemetry.setup(app)
-log = logging.getLogger("payments-gateway")
+log = logging.getLogger("shop-payments")
 
 PSP_URL = os.environ.get("PSP_URL", "http://psp:8000")
 SETTLEMENT_MS = int(os.environ.get("SETTLEMENT_MS", "20"))
