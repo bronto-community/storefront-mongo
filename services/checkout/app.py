@@ -39,6 +39,10 @@ async def healthz() -> dict:
 async def checkout(order: dict) -> dict:
     customer = order.get("customer", {})
     cart = order.get("cart", [])
+    # Returning customers see the loyalty banner on the confirmation page.
+    previous = await asyncio.to_thread(
+        db().orders.count_documents, {"customer_email": customer.get("email")}
+    )
     r = await client.post(
         f"{config.PAYMENTS_URL}/charge",
         json={"amount": 4200},
@@ -54,4 +58,9 @@ async def checkout(order: dict) -> dict:
         "total": 4200,
         "created_at": datetime.datetime.now(datetime.timezone.utc),
     })
-    return {"status": "confirmed", "order_id": order_id, "payment": r.json()}
+    return {
+        "status": "confirmed",
+        "order_id": order_id,
+        "returning_customer": previous > 0,
+        "payment": r.json(),
+    }
