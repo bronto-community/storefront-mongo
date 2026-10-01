@@ -25,7 +25,7 @@ async def healthz() -> dict:
 
 @app.get("/items")
 def items() -> dict:
-    products = list(db().products.find({"active": True}).sort("rank", 1).limit(12))
+    products = list(db().products.find({"active": True}, {"sku": 1, "_id": 0}).sort("rank", 1).limit(12))
     if random.random() < 0.3:
         log.warning("cache miss for shard %d, falling back to primary", random.randint(1, 8))
     return {"items": [p["sku"] for p in products]}
